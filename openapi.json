@@ -1,0 +1,121 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "RaySo API",
+    "version": "1.0",
+    "summary": "An API to generate images from https://ray.so !",
+    "description": "An API to generate images from https://ray.so !",
+    "contact": {
+      "name": "TechiError",
+      "url": "https://t.me/TechiError"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/generate": {
+      "parameters": [],
+      "post": {
+        "summary": "Generate",
+        "operationId": "post",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Generate beautiful ray.so image.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "darkMode",
+            "description": "true for darkmode and false for light mode",
+            "allowEmptyValue": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "title",
+            "description": "Title for the image",
+            "allowEmptyValue": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "theme",
+            "description": "Theme for the image",
+            "allowEmptyValue": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "lang",
+            "description": "Language of the code",
+            "allowEmptyValue": true
+          },
+          {
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "name": "bg",
+            "description": "false for transparent background."
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "padding",
+            "description": "Padding."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "code": ""
+                  }
+                },
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "code": "from time import time\ntime.time()"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Code or text to generate image."
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}
