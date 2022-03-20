@@ -32,7 +32,7 @@ fastify.post('/generate', async (request, reply) => {
     "language": lang,
     "background": bg,
     "padding": padding,
-    "browserPath": "/usr/bin/google-chrome-beta"
+    "browserPath": process.env.BROWSER_PATH
   });
 
   raySo
