@@ -1,0 +1,18 @@
+{
+  "name": "rayso-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^3.27.4",
+    "fastify-static": "^4.6.1",
+    "fastify-swagger": "^5.0.0",
+    "rayso-api": "^1.0.10"
+  }
+}
