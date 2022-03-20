@@ -12,6 +12,7 @@
   "dependencies": {
     "fastify": "^3.27.4",
     "fastify-static": "^4.6.1",
-    "rayso-api": "^1.0.10"
+    "rayso-api": "^1.0.10",
+    "redoc-cli": "^0.13.9"
   }
 }
