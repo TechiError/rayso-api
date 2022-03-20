@@ -11,7 +11,7 @@ fastify.get('/', async (req, reply) => {
   return reply.sendFile('index.html')
 })
 
-fastify.post('/generate', async (request, reply) => {
+fastify.get('/generate', async (request, reply) => {
   console.log(request.body)
   var darkMode = request.query.darkMode ? JSON.parse(request.query.darkMode) : false
   var title = request.query.title || "RaySo"
@@ -36,10 +36,10 @@ fastify.post('/generate', async (request, reply) => {
   });
 
   raySo
-    .cook(request.body.code || "Give Some codes DUDE!")
+    .cook(request.body.code ? request.body : request.query.code || "Give Some codes DUDE!")
     .then((response) => {
       reply.type('image/png');
-      reply.send(response)
+      reply.sendFile(response)
     })
     .catch((err) => {
       console.error(err);
