@@ -12,7 +12,6 @@
   "dependencies": {
     "fastify": "^3.27.4",
     "fastify-static": "^4.6.1",
-    "fastify-swagger": "^5.0.0",
     "rayso-api": "^1.0.10"
   }
 }
