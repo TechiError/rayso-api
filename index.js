@@ -1,4 +1,4 @@
-const fastify = require('fastify')({ logger: true })
+const fastify = require('fastify')({ logger: true})
 const RaySo = require('rayso-api');
 const path = require('path')
 
@@ -12,23 +12,25 @@ fastify.get('/', async (req, reply) => {
 })
 
 fastify.get('/generate', async (request, reply) => {
-  var darkMode = request.query.darkMode ? JSON.parse(request.query.darkMode) : false
-  var title = request.query.title ? request.query.title : "RaySo"
-  var theme = request.query.theme ? request.query.theme : "raindrop"
-  var lang = request.query.lang ? request.query.lang : "auto"
-  var bg = request.query.bg ? JSON.parse(request.query.bg) : true
-  var padding = request.query.padding ? JSON.parse(request.query.padding) : 64
-  var text = request.query.text ? request.query.text : ""
+  var darkMode = (String(request.query.darkMode).toLowerCase() === 'true');
+  var title = request.query.title || "RaySo"
+  var theme = request.query.theme || "raindrop"
+  var lang = request.query.lang || "auto"
+  var bg = request.query.bg ? (String(request.query.bg).toLowerCase() === 'true') : true
+  var padding = request.query.padding ? JSON.parse(Number(request.query.padding)) : 64
+  var text = request.query.text || ""
   if (!text) {
-    return { "error": true, "message": "Provide text"}
+    reply.send({ "error": true, "message": "Provide text"})
+    return reply
   }
   if (![16, 32, 64, 128].includes(padding)) {
-    return { "error": true, "message": "padding must be one of 16, 32, 64, 128" }
+    reply.send({ "error": true, "message": "padding must be one of 16, 32, 64, 128" })
+    return reply
   }
-  if (!["breeze", "candy", "crimson", "falcon", "meadow", "raindrop", "sunset", "midnight"]) {
-    return { "error": true, "message": "Available themes: breeze, candy, crimson, falcon, meadow, midnight, raindrop, sunset!" }
+  if (!["breeze", "candy", "crimson", "falcon", "meadow", "raindrop", "sunset", "midnight"].includes(theme)) {
+    reply.send({ "error": true, "message": "Available themes: breeze, candy, crimson, falcon, meadow, midnight, raindrop, sunset!" })
+    return reply
   }
-  console.log(process.env.BROWSER_PATH)
   var raySo = new RaySo({
     "title": title,
     "darkMode": darkMode,
@@ -44,23 +46,26 @@ fastify.get('/generate', async (request, reply) => {
     .then((response) => {
       reply.type('image/png');
       reply.send(response)
+      return reply
     })
     .catch((err) => {
       console.error(err);
+      reply.send({ "error": true, "message": err })
+      return reply
     });
 })
 
 fastify.post('/generate', async (request, reply) => {
-  var darkMode = request.query.darkMode ? JSON.parse(request.query.darkMode) : false
-  var title = request.query.title ? request.query.title : "RaySo"
-  var theme = request.query.theme ? request.query.theme : "raindrop"
-  var lang = request.query.lang ? request.query.lang : "auto"
-  var bg = request.query.bg ? JSON.parse(request.query.bg) : true
-  var padding = request.query.padding ? JSON.parse(request.query.padding) : 64
+  var darkMode = (String(request.query.darkMode).toLowerCase() === 'true');
+  var title = request.query.title || "RaySo"
+  var theme = request.query.theme || "raindrop"
+  var lang = request.query.lang || "auto"
+  var bg = (String(request.query.bg).toLowerCase() === 'true')
+  var padding = request.query.padding ? JSON.parse(Number(request.query.padding)) : 64
   if (![16, 32, 64, 128].includes(padding)) {
     return { "error": true, "message": "padding must be one of 16, 32, 64, 128" }
   }
-  if (!["breeze", "candy", "crimson", "falcon", "meadow", "raindrop", "sunset", "midnight"]) {
+  if (!["breeze", "candy", "crimson", "falcon", "meadow", "raindrop", "sunset", "midnight"].includes(theme)) {
     return { "error": true, "message": "Available themes: breeze, candy, crimson, falcon, meadow, midnight, raindrop, sunset!" }
   }
   var raySo = new RaySo({
@@ -74,7 +79,7 @@ fastify.post('/generate', async (request, reply) => {
   });
 
   raySo
-    .cook(request.body.code ? request.body.code : "Give Some codes DUDE!")
+    .cook(request.body.code || "Give Some codes DUDE!")
     .then((response) => {
       reply.type('image/png');
       reply.send(response)
@@ -86,7 +91,7 @@ fastify.post('/generate', async (request, reply) => {
 
 const start = async () => {
   try {
-    await fastify.listen(process.env.PORT ? process.env.PORT : 3000)
+    await fastify.listen(process.env.PORT || 3000)
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
