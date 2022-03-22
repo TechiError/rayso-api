@@ -1,5 +1,5 @@
-const fastify = require('fastify')({ logger: true})
-const RaySo = require('rayso-api');
+const fastify = require('fastify')({ logger: true })
+const getScreenshot = require('./functions/rayso')
 const path = require('path')
 
 fastify.register(require('fastify-static'), {
@@ -20,7 +20,7 @@ fastify.get('/generate', async (request, reply) => {
   var padding = request.query.padding ? JSON.parse(Number(request.query.padding)) : 64
   var text = request.query.text || ""
   if (!text) {
-    reply.send({ "error": true, "message": "Provide text"})
+    reply.send({ "error": true, "message": "Provide text" })
     return reply
   }
   if (![16, 32, 64, 128].includes(padding)) {
@@ -31,29 +31,17 @@ fastify.get('/generate', async (request, reply) => {
     reply.send({ "error": true, "message": "Available themes: breeze, candy, crimson, falcon, meadow, midnight, raindrop, sunset!" })
     return reply
   }
-  var raySo = new RaySo({
-    "title": title,
-    "darkMode": darkMode,
-    "theme": theme,
-    "language": lang,
-    "background": bg,
-    "padding": padding,
-    "browserPath": process.env.BROWSER_PATH
-  });
 
-  raySo
-    .cook(text)
-    .then((response) => {
-      reply.type('image/png');
-      reply.send(response)
-      return reply
-    })
-    .catch((err) => {
-      console.error(err);
-      reply.send({ "error": true, "message": err })
-      return reply
-    });
+  try {
+    var image = await getScreenshot(title, text, theme, padding, bg, darkMode, lang)
+    reply.type('image/png')
+    reply.send(image)
+  } catch (error) {
+    reply.type('application/json')
+    reply.send({ "error": true, "message": error })
+  }
 })
+
 
 fastify.post('/generate', async (request, reply) => {
   var darkMode = (String(request.query.darkMode).toLowerCase() === 'true');
@@ -91,10 +79,12 @@ fastify.post('/generate', async (request, reply) => {
 
 const start = async () => {
   try {
+    var image = await getScreenshot("RaySo", "Give Some codes DUDE!", "raindrop", 64, true, false, "auto")
     await fastify.listen(process.env.PORT || 3000)
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
   }
 }
+
 start()
