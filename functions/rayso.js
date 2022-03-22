@@ -19,10 +19,7 @@ async function getScreenshot(title, text, theme, padding, background, darkMode, 
   executablePath: await chromium.executablePath || process.env.PUPPETEER_EXECUTABLE_PATH,
 });
 const page = await browser.newPage();
-await browser.setViewportSize({
-  width: 1920,
-  
-  await page.setViewportSize({
+  await page.setViewport({
     width: 8192,
     height: 2048,
   });

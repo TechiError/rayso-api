@@ -1,0 +1,15 @@
+{
+    "name": "semx",
+    "description": "asda",
+    "keywords": [
+        "sadsd"
+    ],
+    "env": {},
+    "stack": "container",
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "free"
+        }
+    }
+}
