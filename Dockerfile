@@ -8,7 +8,8 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont \
     nodejs \
-    npm
+    npm \
+    font-noto-emoji
 
 COPY . .
 

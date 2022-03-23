@@ -6,6 +6,7 @@ fastify.register(require('fastify-static'), {
   root: path.join(__dirname, 'public'),
   prefix: '/public/',
 })
+fastify.register(require('fastify-formbody'))
 
 fastify.get('/', async (req, reply) => {
   return reply.sendFile('index.html')
@@ -44,43 +45,33 @@ fastify.get('/generate', async (request, reply) => {
 
 
 fastify.post('/generate', async (request, reply) => {
-  var darkMode = (String(request.query.darkMode).toLowerCase() === 'true');
-  var title = request.query.title || "RaySo"
-  var theme = request.query.theme || "raindrop"
-  var lang = request.query.lang || "auto"
-  var bg = (String(request.query.bg).toLowerCase() === 'true')
-  var padding = request.query.padding ? JSON.parse(Number(request.query.padding)) : 64
+  var text = request.body.text || "Give some text!"
+  var darkMode = (String(request.body.darkMode).toLowerCase() === 'true');
+  var title = request.body.title || "RaySo"
+  var theme = request.body.theme || "raindrop"
+  var lang = request.body.lang || "auto"
+  var bg = request.body.bg ? (String(request.body.bg).toLowerCase() === 'true') : true
+  var padding = request.body.padding ? JSON.parse(Number(request.body.padding)) : 64
   if (![16, 32, 64, 128].includes(padding)) {
     return { "error": true, "message": "padding must be one of 16, 32, 64, 128" }
   }
   if (!["breeze", "candy", "crimson", "falcon", "meadow", "raindrop", "sunset", "midnight"].includes(theme)) {
     return { "error": true, "message": "Available themes: breeze, candy, crimson, falcon, meadow, midnight, raindrop, sunset!" }
   }
-  var raySo = new RaySo({
-    "title": title,
-    "darkMode": darkMode,
-    "theme": theme,
-    "language": lang,
-    "background": bg,
-    "padding": padding,
-    "browserPath": process.env.BROWSER_PATH
-  });
-
-  raySo
-    .cook(request.body.code || "Give Some codes DUDE!")
-    .then((response) => {
-      reply.type('image/png');
-      reply.send(response)
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  try {
+    var image = await getScreenshot(title, text, theme, padding, bg, darkMode, lang)
+    reply.type('image/png')
+    reply.send(image)
+  } catch (error) {
+    reply.type('application/json')
+    reply.send({ "error": true, "message": error })
+  }
 })
 
 const start = async () => {
   try {
     var image = await getScreenshot("RaySo", "Give Some codes DUDE!", "raindrop", 64, true, false, "auto")
-    await fastify.listen(process.env.PORT || 3000)
+    await fastify.listen(process.env.PORT || 3000, process.env.HOST || '0.0.0.0')
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
