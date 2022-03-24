@@ -4,15 +4,9 @@ async function getScreenshot(title, text, theme, padding, background, darkMode, 
   
   const browser = await chromium.puppeteer.launch({
   args: [
-    "--proxy-server='direct://'",
-    '--proxy-bypass-list=*',
     '--no-sandbox',
     '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-accelerated-2d-canvas',
-    '--no-first-run',
-    '--no-zygote',
-    '--disable-gpu',
+    '--disable-dev-shm-usage'
   ],
   headless: true,
   ignoreHTTPSErrors: true,
@@ -45,10 +39,10 @@ const page = await browser.newPage();
     ).style.borderRadius = '0';
   });
   const element = await page.$('div[id="frame"]');
-  const image = await element.screenshot({ omitBackground: true, path: './rayso.png' });
+  const image = await element.screenshot({ omitBackground: true, waitUntil: 'networkidle2' });
 
   await browser.close();
   return image
 }
-getScreenshot('RaySo', 'Give Some codes DUDE!', 'raindrop', 64, true, true, 'auto')
+
 module.exports = getScreenshot
