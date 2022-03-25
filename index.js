@@ -45,11 +45,11 @@ fastify.get('/generate', async (request, reply) => {
 
 
 fastify.post('/generate', async (request, reply) => {
-  var text = request.body.text
+  var text = request.body.text || "Provide Text"
   var darkMode = (String(request.body.darkMode).toLowerCase() === 'true');
-  var title = request.body.title
-  var theme = request.body.theme
-  var lang = request.body.lang
+  var title = request.body.title || "RaySo"
+  var theme = request.body.theme || "raindrop"
+  var lang = request.body.lang || "auto"
   var bg = request.body.bg ? (String(request.body.bg).toLowerCase() === 'true') : true
   var padding = request.body.padding ? JSON.parse(Number(request.body.padding)) : 32
   if (![16, 32, 64, 128].includes(padding)) {
