@@ -14,7 +14,7 @@
     "fastify": "^3.27.4",
     "fastify-formbody": "^5.2.0",
     "fastify-static": "^4.6.1",
-    "playwright-core": "^1.20.1",
+    "puppeteer-core": "^13.5.1",
     "redoc-cli": "^0.13.9"
   }
 }
