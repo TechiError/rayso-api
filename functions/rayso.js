@@ -1,22 +1,10 @@
 const chromium = require('chrome-aws-lambda');
+const { getBrowser } = require("./browser");
 
-async function getScreenshot(title, text, theme, padding, background, darkMode, language) {
-  
-  const browser = await chromium.puppeteer.launch({
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage'
-  ],
-  headless: true,
-  ignoreHTTPSErrors: true,
-  executablePath: await chromium.executablePath || process.env.PUPPETEER_EXECUTABLE_PATH,
-});
-const page = await browser.newPage();
-  await page.setViewport({
-    width: 8192,
-    height: 2048,
-  });
+async function getScreenshot(title = "Rayso",
+ text="Give some text!", theme="raindrop", padding=32, background=True, darkMode=False, language=auto) {
+  const browser = await getBrowser();
+  const page = await browser.newPage();
   var page_url = `https://ray.so/?title=${encodeURIComponent(
     title,
   )}&theme=${theme}&spacing=${padding}&background=${background
@@ -32,16 +20,11 @@ const page = await browser.newPage();
     document.querySelector(
       '#frame > div.drag-control-points > div.handle.right',
     ).style.display = 'none';
-    document.querySelector('#app > main > section').style.display =
-      'none';
-    document.querySelector(
-      '#frame > div.app-frame-container > div.app-frame',
-    ).style.borderRadius = '0';
   });
   const element = await page.$('div[id="frame"]');
-  const image = await element.screenshot({ omitBackground: true, waitUntil: 'networkidle2' });
+  const image = await element.screenshot({ omitBackground: true});
 
-  await browser.close();
+  await page.close();
   return image
 }
 

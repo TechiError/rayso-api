@@ -14,11 +14,11 @@ fastify.get('/', async (req, reply) => {
 
 fastify.get('/generate', async (request, reply) => {
   var darkMode = (String(request.query.darkMode).toLowerCase() === 'true');
-  var title = request.query.title || "RaySo"
+  var title = request.query.title || "RaySo";
   var theme = request.query.theme || "raindrop"
   var lang = request.query.lang || "auto"
   var bg = request.query.bg ? (String(request.query.bg).toLowerCase() === 'true') : true
-  var padding = request.query.padding ? JSON.parse(Number(request.query.padding)) : 64
+  var padding = request.query.padding ? JSON.parse(Number(request.query.padding)) : 32
   var text = request.query.text || ""
   if (!text) {
     reply.send({ "error": true, "message": "Provide text" })
@@ -45,13 +45,13 @@ fastify.get('/generate', async (request, reply) => {
 
 
 fastify.post('/generate', async (request, reply) => {
-  var text = request.body.text || "Give some text!"
+  var text = request.body.text
   var darkMode = (String(request.body.darkMode).toLowerCase() === 'true');
-  var title = request.body.title || "RaySo"
-  var theme = request.body.theme || "raindrop"
-  var lang = request.body.lang || "auto"
+  var title = request.body.title
+  var theme = request.body.theme
+  var lang = request.body.lang
   var bg = request.body.bg ? (String(request.body.bg).toLowerCase() === 'true') : true
-  var padding = request.body.padding ? JSON.parse(Number(request.body.padding)) : 64
+  var padding = request.body.padding ? JSON.parse(Number(request.body.padding)) : 32
   if (![16, 32, 64, 128].includes(padding)) {
     return { "error": true, "message": "padding must be one of 16, 32, 64, 128" }
   }
@@ -70,7 +70,7 @@ fastify.post('/generate', async (request, reply) => {
 
 const start = async () => {
   try {
-    var image = await getScreenshot("RaySo", "Give Some codes DUDE!", "raindrop", 64, true, false, "auto")
+    //var image = await getScreenshot("RaySo", "Give Some codes DUDE!", "raindrop", 64, true, false, "auto")
     await fastify.listen(process.env.PORT || 3000, process.env.HOST || '0.0.0.0')
   } catch (err) {
     fastify.log.error(err)

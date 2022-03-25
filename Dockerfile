@@ -13,9 +13,7 @@ RUN apk add --no-cache \
 
 COPY . .
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
-    BROWSER_PATH=/usr/bin/chromium-browser
+ENV BROWSER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 RUN npm install -g redoc-cli
 
