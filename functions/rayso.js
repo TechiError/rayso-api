@@ -20,6 +20,9 @@ async function getScreenshot(title = "Rayso",
     document.querySelector(
       '#frame > div.drag-control-points > div.handle.right',
     ).style.display = 'none';
+    document.querySelector(
+       '#app > main > section',
+     ).style.display = 'none';
   });
   const element = await page.$('div[id="frame"]');
   const image = await element.screenshot({ omitBackground: true});
